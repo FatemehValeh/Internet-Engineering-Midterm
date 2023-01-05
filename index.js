@@ -4,7 +4,7 @@ const avatarImage = document.querySelector('.profile_img')
 const username = document.querySelector('.name');
 const userId = document.querySelector('.user_id');
 const bio = document.querySelector('.profile_bio');
-const stats = document.getElementsByClassName('num');
+const profileStatus = document.getElementsByClassName('num');
 const locationDiv = document.querySelector('.place');
 const locationText = document.querySelector('.place_name');
 const error = document.querySelector('.error');
@@ -12,23 +12,7 @@ const languageDiv = document.querySelector(".language");
 const language = document.querySelector(".popular_language");
 
 
-
-// for handle status code error
-function handleError(response) {
-    showErrorMessage(response.message);
-}
-
-// displays each given message as an error message 
-function showErrorMessage(message) {
-    console.log(message);
-    error.classList.add('active');
-    error.innerHTML = message;
-    setTimeout(() => { // removes the error message from screen after 4 seconds.
-        error.classList.remove('active');
-    }, 4000)
-}
-
-// get user data from API and return the json value.
+// get request to get user data from API
 async function getUserData(username) {
     console.log("request");
     try {
@@ -46,15 +30,14 @@ async function getUserData(username) {
     }
 }
 
-// set avatar in view
+// set the avatar in page
 function setAvatar(avatar) {
     avatarImage.src = avatar;
-    console.log("image added")
 }
 
-// set name in view
+// set full name of the user
 function setName(userData) {
-    if (userData.name == null) {
+    if (userData.name == null) { // if user doesn't have full name, hide its element
         username.style.display = "none";
     } else {
         username.style.display = "block";
@@ -63,6 +46,7 @@ function setName(userData) {
     userId.innerHTML = userData.login;
 }
 
+// set the bio 
 function setBio(userData) {
     if (userData.bio == null)
         bio.innerHTML = `This user has no bio`;
@@ -70,15 +54,16 @@ function setBio(userData) {
         bio.innerHTML = userData.bio;
 }
 
-// Sets followers, following and repo counts.
-function setStats(userData) {
-    stats[0].innerHTML = userData.followers;
-    stats[1].innerHTML = userData.following;
-    stats[2].innerHTML = userData.public_repos;
+// set followers, following and repositores counts
+function setStatus(userData) {
+    profileStatus[0].innerHTML = userData.followers;
+    profileStatus[1].innerHTML = userData.following;
+    profileStatus[2].innerHTML = userData.public_repos;
 }
 
+// set the location of user
 function setLocation(userData) {
-    if (userData.location == null) {
+    if (userData.location == null) { // if user hasn't set location, hide it's element
         locationDiv.style.display = "none";
     } else {
         locationDiv.style.display = "block";
@@ -86,25 +71,25 @@ function setLocation(userData) {
     }
 }
 
-// add http to start of link
-const getClickableLink = link => {
-    return link.startsWith("http://") || link.startsWith("https://") ?
-        link :
-        `http://${link}`;
-};
+// set the user popular langeuage  
+function setPopularLanguage(userData) {
+    language.innerHTML = userData.popular_langeuage;
+    languageDiv.style.display = "block";
+}
 
 
-// fill user data in view .
+// fill all user data in html
 function fillProfileCard(userData) {
     console.log("user data:", userData);
     setAvatar(userData.avatar_url);
     setName(userData);
     setLocation(userData);
-    setStats(userData);
+    setStatus(userData);
     setBio(userData);
+    setPopularLanguage(userData);
 }
 
-// get all repositories of user and return json.
+// get request for all repositories of user from API
 async function getRepos(username) {
     try {
         let response = await fetch(`https://api.github.com/users/${username}/repos`);
@@ -120,7 +105,7 @@ async function getRepos(username) {
     }
 }
 
-// set popular repository in view.
+// find user popular language based on his 5 last repositories
 async function findPopLang(username) {
     languageDiv.style.display = "none";
     let repos = await getRepos(username);
@@ -141,35 +126,50 @@ async function findPopLang(username) {
     popRepo.sort(function(a, b) {
         return b[1] - a[1];
     });
-    // set in html
-    language.innerHTML = popRepo[0][0];
-    languageDiv.style.display = "block";
-
+    return popRepo[0][0]
 }
 
-// the process of sending data and fill it in view.
+// function that is called when seach button or enter key is pressed
 async function sendRequest(e) {
-    console.log("clicked on submit");
+    console.log("a search request");
     let username = usernameInput.value;
     if (username == "") {
         console.log("username was empty");
         return;
     }
     e.preventDefault();
+
     let userData;
-    userData = await JSON.parse(window.localStorage.getItem(username));
-    if (userData == null) {
-        userData = await getUserData(username);
+    userData = await JSON.parse(window.localStorage.getItem(username)); // check if it is cached
+    if (userData == null) { // isn't available in local storage
+        userData = await getUserData(username); // make a request to get data
         if (userData == null) {
             console.log("userData null")
             return;
         }
-        findPopLang(username);
-        window.localStorage.setItem(username, JSON.stringify(userData));
+
+        let popLnag = await findPopLang(username);
+        userData['popular_langeuage'] = popLnag
+        window.localStorage.setItem(username, JSON.stringify(userData)); // save data in local storage to prevent repetitive requests
+    } else {
+        console.log("loaded from local storage")
     }
-    console.log("came from local storage")
-    findPopLang(username);
     fillProfileCard(userData);
+}
+
+// for handle error
+function handleError(response) {
+    showErrorMessage(response.message);
+}
+
+// displays each given message as an error message 
+function showErrorMessage(message) {
+    console.log(message);
+    error.classList.add('active');
+    error.innerHTML = message;
+    setTimeout(() => { // removes the error message from screen after 4 seconds.
+        error.classList.remove('active');
+    }, 4000)
 }
 
 searchButton.addEventListener('click', sendRequest);

@@ -8,30 +8,42 @@
     color: #0a2138;
 }
 
+
+/* for backgroun image */
+
 body {
     background: url("octcat2.jpg") no-repeat center center fixed;
-    height: 500px;
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100%;
-    position: relative;
 }
 
 .wrapper {
     position: relative;
-    width: 325px;
-    margin: 150px auto 0;
+    left: 0;
+    width: 100%;
+    margin: auto auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
+
+
+/* the light blue rectangular  */
 
 .profile_card {
     width: 400px;
-    height: 550px;
     background: #d8dbe3;
     padding: 50px 25px;
-    position: relative;
     z-index: 1;
     opacity: 0.95;
+    color: #3a2b40;
+    text-align: center;
 }
+
+
+/* for showing the avatar */
 
 .profile_img {
     margin: 20px;
@@ -41,48 +53,71 @@ body {
     margin: 0 auto;
 }
 
-.profile_card {
-    color: #3a2b40;
-    text-align: center;
+
+/* for user data like name, id, place and language */
+
+.profile_data {
+    margin: 10px;
 }
+
+
+/* icons used in the page */
 
 .icon {
     margin: 5px;
 }
 
-.profile_card .profile_data .name {
+
+/* for the full name of the user */
+
+.name {
     font-size: 24px;
     font-weight: 500;
     margin: 15px 0 5px;
     display: block;
 }
 
-.profile_card .profile_data .place {
+
+/* for the location of the user */
+
+.place {
     font-size: 14px;
     font-weight: 300;
     margin: 10px;
     display: block;
 }
 
-.profile_card .profile_data .language {
+
+/* for the most popular language the user has used in his repositories */
+
+.language {
     font-size: 14px;
     font-weight: 300;
     margin: 10px;
     display: block;
 }
 
-.profile_card .profile_data ._id {
+
+/* for the github id of the user */
+
+._id {
     font-size: 14px;
     font-weight: 300;
     margin: 10px;
     display: block;
 }
+
+
+/* for the bio of the user */
 
 .profile_bio {
     font-size: 14px;
     font-weight: 400;
     margin: 10px;
 }
+
+
+/* for profile icons, followers, following, and repositories */
 
 .profile_icons {
     display: flex;
@@ -94,14 +129,16 @@ body {
     margin-right: 15px;
 }
 
-.profile_icons .profile_item:last-child {
-    margin-right: 0;
-}
+
+/* font size of icons */
 
 .profile_icons .icon,
 .profile_icons .number {
     font-size: 20px;
 }
+
+
+/* style of icons' titles */
 
 .profile_icons .title {
     font-size: 10px;
@@ -109,9 +146,11 @@ body {
     margin: 10px 0;
 }
 
+
+/* stype of search box */
+
 .search-box {
     position: relative;
-    /* transform: translate(-50%, -50%); */
     background: #91b8d9;
     height: 45px;
     border-radius: 77px;
@@ -119,20 +158,16 @@ body {
     margin: 10px;
 }
 
-.profile_data {
-    margin: 10px;
-}
 
-.search-box .search-txt {
-    width: 240px;
-    padding: 0 6px;
-    top: 50px;
-}
+/* to change the color of the search button when mouse goes over it*/
 
 .search-box:hover>.search-btn {
     background: white;
     color: #91b8d9;
 }
+
+
+/* style of the search button */
 
 .search-btn {
     color: #ffffff;
@@ -149,6 +184,18 @@ body {
     border: none;
 }
 
+
+/* style of the placeholder text in search bar */
+
+.search-box .search-txt {
+    width: 240px;
+    padding: 0 6px;
+    top: 50px;
+}
+
+
+/* style of the text typed in the search bar */
+
 .search-txt {
     border: none;
     background: none;
@@ -160,6 +207,9 @@ body {
     line-height: 45px;
     width: 0px;
 }
+
+
+/* style of error box */
 
 .error {
     position: relative;
@@ -173,6 +223,9 @@ body {
     visibility: hidden;
     opacity: 0.98;
 }
+
+
+/* make the error box visible when an error occured */
 
 .error.active {
     visibility: visible;
